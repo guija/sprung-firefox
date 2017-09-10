@@ -1,12 +1,6 @@
-console.log("BACKGROUND!");
+var currentTabId = undefined;
+var currentWindowTitle = undefined;
 
-function handleRemoved(tabId, removeInfo) {
-  console.log("Tab: " + tabId + " is closing");
-  console.log("Window ID: " + removeInfo.windowId);
-  console.log("Window is closing: " + removeInfo.isWindowClosing);  
-}
-
-// browser.tabs.onRemoved.addListener(handleRemoved);
 browser.tabs.onCreated.addListener(handleTabCreated);
 browser.tabs.onUpdated.addListener(handleTabUpdate);
 browser.tabs.onActivated.addListener(handleTabActivated);
@@ -18,10 +12,16 @@ function handleTabActivated(activeInfo) {
 	console.log("ACTIVATED")
 	console.log("tabId = " + tabId);
 	console.log("tabWindow = " + windowId);
+	currentTabId = tabId;
+	updateTabList();
 }
 
 function handleTabUpdate(tabId, changeInfo, tab) {
 	logTabInfo("UPDATED", tab);
+	if (tabId == currentTabId) {
+		currentWindowTitle = changeInfo.title;
+	}
+	updateTabList();
 }
 
 function handleTabCreated(tab) {
@@ -34,4 +34,47 @@ function logTabInfo(action, tab) {
 	console.log("title = " + tab.title);
 	console.log("url = " + tab.url);
 	console.log("window id = " + tab.windowId);
+}
+
+function updateTabList() {
+  var queryInfo = { currentWindow: true };
+  var querying = browser.tabs.query(queryInfo);
+  querying.then(handleUpdateTabs, handleUpdateTabListError);
+}
+
+function handleUpdateTabListError(error) {
+	console.log(error);
+}
+
+function handleUpdateTabs(tabs) {
+
+	var customTabList = [];
+
+    for(var i = 0; i < tabs.length; i++) {
+
+      var tab = tabs[i];
+      var isCurrent = currentTabId == tab.id;
+
+      logTabInfo("HANDLEUPDATETABS", tab);
+
+      // Moeglicherweise stimmt der neue Tabtitel nicht. Falls er nicht stimmt muss man 
+      // den Wert aus onUpdated param changeInfo.title verwenden
+      customTabList.push({
+        index: i,
+        id: tab.id,
+        title: tab.title,
+        isCurrent: isCurrent,
+        windowId: tab.windowId
+      });
+
+    }
+    
+    console.log(customTabList);
+
+    $.post(
+      SPRUNG_REST_API + "/firefox", 
+      JSON.stringify(customTabList), 
+      function(response) { console.log(response) }, 
+      "json"
+    );
 }
