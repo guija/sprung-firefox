@@ -11,5 +11,11 @@
       "matches": ["*://*.mozilla.org/*"],
       "js": ["sprung.js"]
     }
-  ]
+  ],
+  "permissions": [
+    "tabs"
+  ],
+  "background": {
+    "scripts": ["background.js"]
+  }
 }
