@@ -13,7 +13,8 @@
     }
   ],
   "permissions": [
-    "tabs"
+    "tabs",
+    "http://localhost:1234/firefox"
   ],
   "background": {
     "scripts": ["background.js", "jquery-3.2.1.min.js"]

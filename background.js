@@ -1,5 +1,6 @@
 var currentTabId = undefined;
 var currentWindowTitle = undefined;
+var SPRUNG_REST_API = "http://localhost:1234";
 
 browser.tabs.onCreated.addListener(handleTabCreated);
 browser.tabs.onUpdated.addListener(handleTabUpdate);
@@ -48,33 +49,35 @@ function handleUpdateTabListError(error) {
 
 function handleUpdateTabs(tabs) {
 
-	var customTabList = [];
+  console.log("HANDLEUPDATETABS");
 
-    for(var i = 0; i < tabs.length; i++) {
+  var customTabList = [];
 
-      var tab = tabs[i];
-      var isCurrent = currentTabId == tab.id;
+  for(var i = 0; i < tabs.length; i++) {
 
-      logTabInfo("HANDLEUPDATETABS", tab);
+    var tab = tabs[i];
+    var isCurrent = currentTabId == tab.id;
 
-      // Moeglicherweise stimmt der neue Tabtitel nicht. Falls er nicht stimmt muss man 
-      // den Wert aus onUpdated param changeInfo.title verwenden
-      customTabList.push({
-        index: i,
-        id: tab.id,
-        title: tab.title,
-        isCurrent: isCurrent,
-        windowId: tab.windowId
-      });
+    logTabInfo("HANDLEUPDATETABS", tab);
 
-    }
-    
-    console.log(customTabList);
+    // Moeglicherweise stimmt der neue Tabtitel nicht. Falls er nicht stimmt muss man 
+    // den Wert aus onUpdated param changeInfo.title verwenden
+    customTabList.push({
+      index: i,
+      id: tab.id,
+      title: tab.title,
+      isCurrent: isCurrent,
+      windowId: tab.windowId
+    });
 
-    $.post(
-      SPRUNG_REST_API + "/firefox", 
-      JSON.stringify(customTabList), 
-      function(response) { console.log(response) }, 
-      "json"
-    );
+  }
+  
+  console.log(customTabList);
+
+  $.post(
+    SPRUNG_REST_API + "/firefox", 
+    JSON.stringify(customTabList), 
+    function(response) { console.log(response) }, 
+    "json"
+  );
 }
