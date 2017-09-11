@@ -1,0 +1,20 @@
+body,
+html {
+	font-family: Arial;
+}
+
+.status-not-running,
+.status-running {
+	width:200px;
+}
+
+.status-running {
+	display: none;
+	color:green;
+	font-weight: bold;
+}
+
+.status-not-running {
+	color:red;
+	font-weight: bold;
+}

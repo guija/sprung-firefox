@@ -1,6 +1,5 @@
 var currentTabId = undefined;
 var currentWindowTitle = undefined;
-var SPRUNG_REST_API = "http://localhost:1234";
 var logging = false;
 
 browser.tabs.onCreated.addListener(handleTabCreated);

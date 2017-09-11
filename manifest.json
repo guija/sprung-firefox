@@ -8,17 +8,22 @@
   },
   "permissions": [
     "tabs",
-    "http://localhost:1234/firefox"
+    "http://localhost:1234/firefox",
+    "http://localhost:1234/test"
   ],
   "background": {
-    "scripts": ["background.js", "jquery-3.2.1.min.js"]
+    "scripts": [
+      "config.js",
+      "jquery-3.2.1.min.js",
+      "background.js"
+    ]
   },
   "browser_action": {
     "default_icon": {
       "16": "icons/spring.png",
       "32": "icons/spring.png"
     },
-    "browser_style": true,
+    "browser_style": false,
     "default_popup": "popup.html"
   }
 }
