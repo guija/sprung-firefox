@@ -1,6 +1,7 @@
 var currentTabId = undefined;
 var currentWindowTitle = undefined;
 var SPRUNG_REST_API = "http://localhost:1234";
+var logging = false;
 
 browser.tabs.onCreated.addListener(handleTabCreated);
 browser.tabs.onUpdated.addListener(handleTabUpdate);
@@ -9,10 +10,6 @@ browser.tabs.onActivated.addListener(handleTabActivated);
 function handleTabActivated(activeInfo) {
 	var tabId = activeInfo.tabId;
 	var windowId = activeInfo.windowId;
-	// TODO Get tab object if needed
-	console.log("ACTIVATED")
-	console.log("tabId = " + tabId);
-	console.log("tabWindow = " + windowId);
 	currentTabId = tabId;
 	updateTabList();
 }
@@ -30,6 +27,7 @@ function handleTabCreated(tab) {
 }
 
 function logTabInfo(action, tab) {
+  if(!logging) return;
 	console.log(action);
 	console.log("tabid = " + tab.id);
 	console.log("title = " + tab.title);
@@ -49,8 +47,6 @@ function handleUpdateTabListError(error) {
 
 function handleUpdateTabs(tabs) {
 
-  console.log("HANDLEUPDATETABS");
-
   var customTabList = [];
 
   for(var i = 0; i < tabs.length; i++) {
@@ -60,8 +56,6 @@ function handleUpdateTabs(tabs) {
 
     logTabInfo("HANDLEUPDATETABS", tab);
 
-    // Moeglicherweise stimmt der neue Tabtitel nicht. Falls er nicht stimmt muss man 
-    // den Wert aus onUpdated param changeInfo.title verwenden
     customTabList.push({
       index: i,
       id: tab.id,
@@ -72,8 +66,6 @@ function handleUpdateTabs(tabs) {
 
   }
   
-  console.log(customTabList);
-
   $.post(
     SPRUNG_REST_API + "/firefox", 
     JSON.stringify(customTabList), 
